@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature and Humidity Display</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .data {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Fancy Button Styles */
+    .fancy-btn {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .fancy-btn:hover {
+      background-color: #45a049; /* Darker Green */
+    }
+
+    .fancy-btn:active {
+      background-color: #3e8e41;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transform: translateY(2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Temperature and Humidity</h1>
+    <div class="data" id="temperature">Temperature: </div>
+    <div class="data" id="humidity">Humidity: </div>
+    <button class="fancy-btn" id="turnOnBtn">Turn LED On</button>
+    <button class="fancy-btn" id="turnOffBtn">Turn LED Off</button>
+  </div>
+
+  <script>
+    const ws = new WebSocket(`ws://${location.hostname}:${location.port}`);
+  
+    ws.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+  
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('Received data:', data);
+      document.getElementById('temperature').textContent = `Temperature: ${data.temperature}°C`;
+      document.getElementById('humidity').textContent = `Humidity: ${data.humidity}%`;
+    };
+  
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+  
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        console.log('Fetched data:', data);
+        document.getElementById('temperature').textContent = `Temperature: ${data.temperature}°C`;
+        document.getElementById('humidity').textContent = `Humidity: ${data.humidity}%`;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  
+    function sendCommand(command) {
+      console.log('Sending command:', command);
+      ws.send(JSON.stringify({ command }));
+    }
+  
+    document.getElementById('turnOnBtn').addEventListener('click', () => {
+      console.log('Turn LED On button clicked');
+      sendCommand('1');
+    });
+  
+    document.getElementById('turnOffBtn').addEventListener('click', () => {
+      console.log('Turn LED Off button clicked');
+      sendCommand('0');
+    });
+  
+    fetchData(); // Fetch data when the page loads
+    // Fetch data every 5 seconds
+    setInterval(fetchData, 5000);
+  </script>
+</body>
+</html>

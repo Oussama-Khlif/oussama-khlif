@@ -1,0 +1,30 @@
+Le projet vise à créer une interface web qui affiche les données de température et d'humidité obtenues à partir d'une carte ESP32 équipée d'un capteur DHT11 en utilisant REST. Les utilisateurs peuvent contrôler une LED sur la carte ESP32 via l'interface web via CoAP
+
+Configuration de l'environnement :
+
+Pour le côté serveur (Node.js) :
+- Installez Node.js pour le code côté serveur.
+- Installez les packages Node.js nécessaires à l'aide de npm : "npm install express path http ws coap"
+- Lancez la commande "node server.js
+
+Pour le côté ESP32 :
+- Configurez l'IDE Arduino avec le support de la carte ESP32.
+- Installez les bibliothèques requises à l'aide du Gestionnaire de bibliothèques Arduino :
+WiFi
+WiFiUdp
+Bibliothèque du capteur DHT
+Bibliothèque coap-simple
+Bibliothèque HTTPClient
+
+Technologies Utilisées :
+Node.js pour le code côté serveur.
+REST pour la gestion des requêtes HTTP.
+WebSocket pour la communication en temps réel entre le serveur et les clients.
+CoAP pour la communication avec la carte ESP32.
+HTML, CSS et JavaScript pour l'interface web.
+IDE Arduino et carte ESP32 pour le contrôle matériel.
+
+Dépannage :
+Assurez-vous que la carte ESP32 est connectée au même réseau que le serveur.
+Vérifiez les adresses IP configurées dans le code serveur et Arduino.
+Vérifiez s'il y a des messages d'erreur dans la console du serveur ou le moniteur série de l'IDE Arduino.
